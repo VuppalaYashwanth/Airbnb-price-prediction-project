@@ -1,0 +1,65 @@
+name: R Analysis Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup R
+      uses: r-lib/actions/setup-r@v2
+      with:
+        r-version: '4.2.0'
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
+    
+    - name: Install R dependencies
+      run: |
+        Rscript -e 'source("requirements.R")'
+    
+    - name: Run data generation
+      run: |
+        Rscript scripts/01_data_generation.R
+    
+    - name: Run preprocessing
+      run: |
+        Rscript scripts/02_data_preprocessing.R
+    
+    - name: Run EDA
+      run: |
+        Rscript scripts/03_exploratory_analysis.R
+    
+    - name: Run modeling
+      run: |
+        Rscript scripts/04_modeling.R
+    
+    - name: Run predictions
+      run: |
+        Rscript scripts/05_predictions.R
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: analysis-results
+        path: |
+          outputs/
+          visualizations/
+    
+    - name: Check for errors
+      run: |
+        if [ -d "outputs" ] && [ "$(ls -A outputs)" ]; then
+          echo "✓ Analysis completed successfully"
+        else
+          echo "✗ Analysis failed - no outputs generated"
+          exit 1
+        fi

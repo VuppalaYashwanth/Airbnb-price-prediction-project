@@ -1,0 +1,33 @@
+# R
+.Rhistory
+.RData
+.Rproj.user
+*.Rproj
+
+# Data files (uncomment if you don't want to track data)
+# data/*.csv
+# data/*.txt
+
+# Output files (optional - uncomment to ignore outputs)
+# outputs/*.txt
+# outputs/*.csv
+# outputs/*.rds
+
+# Visualization files (optional)
+# visualizations/*.png
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*~
+*.swp
+*.swo
+
+# Log files
+*.log
